@@ -1,0 +1,6 @@
+- features: "Some text we are going to index against the features field."
+  includes: "Some text we are going to index against the includes field."
+- features: "Again! Some more text we are going to index against the features field."
+  includes: "Again! Some more text we are going to index against the includes field."
+- features: "Yet again! Some more text we are going to index against the features field."
+  includes: "Yet again! Some more text we are going to index against the includes field."
