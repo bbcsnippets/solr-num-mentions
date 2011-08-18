@@ -7,6 +7,7 @@
       <include name="**/*.jar"/>
     </fileset>
     <pathelement location="${build.dir}" />
+    <pathelement location="solr" />
   </path>
 
   <target name="clean">
@@ -24,9 +25,9 @@
   </target>
 
   <target name="test" depends="compile">
-    <junit printsummary="yes" haltonfailure="yes">
+    <junit printsummary="yes" haltonfailure="yes" showoutput="true">
       <classpath refid="compile.classpath"/>
-      <batchtest fork="no">
+      <batchtest fork="yes">
         <fileset dir="src">
           <include name="**/*Test.java"/>
         </fileset>
