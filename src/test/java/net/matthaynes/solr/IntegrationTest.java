@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.util.AbstractSolrTestCase;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -52,13 +53,20 @@ public class IntegrationTest extends AbstractSolrTestCase {
   }
 
   // Helpers
-
-  private void addTestDocs() {
-    List<Map<String, String>> data;
+  private List<Map> loadTestDocs() {
     try {
       InputStream input = new FileInputStream(new File("src/test/java/net/matthaynes/solr/docs.yml"));
       Yaml yaml = new Yaml();
-      data = (List<Map<String, String>>) yaml.load(input);
+      return (List<Map>) yaml.load(input);
+    } catch(Exception e) {
+      throw new RuntimeException("Cannot load YAML file for test docs");
+    }
+  }
+
+  private void addTestDocs() {
+    try {
+
+      List<Map> data = loadTestDocs();
 
       for (int i = 0; i < data.size(); i++) {
         Map obj = data.get(i);
@@ -71,10 +79,8 @@ public class IntegrationTest extends AbstractSolrTestCase {
 
       server.commit();
 
-    } catch(SolrServerException e) {
-      throw new RuntimeException("Error uploading docs to solr");
     } catch(Exception e) {
-      throw new RuntimeException("Cannot load YAML file for test docs");
+      throw new RuntimeException("Error uploading docs to solr");
     }
 
   }
