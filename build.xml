@@ -1,0 +1,37 @@
+<project name="solr" basedir=".">
+
+  <property name="build.dir" value="build" />
+
+  <path id="compile.classpath">
+    <fileset dir="lib">
+      <include name="**/*.jar"/>
+    </fileset>
+    <pathelement location="${build.dir}" />
+  </path>
+
+  <target name="clean">
+    <delete dir="${build.dir}" />
+  </target>
+
+  <target name="setup">
+    <mkdir dir="${build.dir}" />
+  </target>
+
+  <target name="compile" depends="clean, setup">
+    <javac srcdir="src" destdir="${build.dir}" includeantruntime="false">
+      <classpath refid="compile.classpath" />
+    </javac>
+  </target>
+
+  <target name="test" depends="compile">
+    <junit printsummary="yes" haltonfailure="yes">
+      <classpath refid="compile.classpath"/>
+      <batchtest fork="no">
+        <fileset dir="src">
+          <include name="**/*Test.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+</project>
