@@ -11,6 +11,16 @@ namespace :example do
       end
     end
 
+    desc "Populate example solr server"
+    task :populate do
+
+    end
+
+    desc "Drop example solr database"
+    task :drop do
+
+    end
+
   end
 
 end
