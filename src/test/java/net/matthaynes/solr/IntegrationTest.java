@@ -24,18 +24,17 @@ public class IntegrationTest extends AbstractSolrTestCase {
 
   @Override
   public String getSchemaFile() {
-    return "/Users/matth/work/solr_num_mentions/solr/conf/schema.xml";
+    return "solr/conf/schema.xml";
   }
 
   @Override
   public String getSolrConfigFile() {
-    return "/Users/matth/work/solr_num_mentions/solr/conf/solrconfig.xml";
+    return "solr/conf/solrconfig.xml";
   }
 
   @Before
   @Override
   public void setUp() throws Exception {
-    logger.info("testA being run...");
     super.setUp();
     server = new EmbeddedSolrServer(h.getCoreContainer(), h.getCore().getName());
   }
