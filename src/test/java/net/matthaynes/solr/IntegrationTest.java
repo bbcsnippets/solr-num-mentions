@@ -52,6 +52,23 @@ public class IntegrationTest extends AbstractSolrTestCase {
     assertEquals(0L, response.getResults().getNumFound());
   }
 
+  @Test
+  public void testAddsNumeMentionsToResponse() throws SolrServerException {
+    SolrQuery params = new SolrQuery("text");
+    // params.setShowDebugInfo(true);
+    QueryResponse response = server.query(params);
+    logger.info("****************************************************************");
+    logger.info("****************************************************************");
+    logger.info("****************************************************************");
+    logger.info("****************************************************************");
+    logger.info(response.getResponse().toString());
+    logger.info("****************************************************************");
+    logger.info("****************************************************************");
+    logger.info("****************************************************************");
+    logger.info("****************************************************************");
+    assertTrue(response.getResponse().indexOf("numMentions", 0) > -1);
+  }
+
   // Helpers
   private List<Map> loadTestDocs() {
     try {
@@ -82,7 +99,6 @@ public class IntegrationTest extends AbstractSolrTestCase {
     } catch(Exception e) {
       throw new RuntimeException("Error uploading docs to solr");
     }
-
   }
 
 }
