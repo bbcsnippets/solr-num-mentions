@@ -8,6 +8,8 @@ import org.apache.solr.util.plugin.*;
 import org.apache.solr.handler.component.SearchComponent;
 import org.apache.solr.handler.component.ResponseBuilder;
 import org.apache.solr.common.util.NamedList;
+import org.apache.solr.util.SolrPluginUtils;
+import org.apache.lucene.search.Explanation;
 
 public class NumMentionsSearchComponent extends SearchComponent {
 
@@ -18,7 +20,16 @@ public class NumMentionsSearchComponent extends SearchComponent {
 
   @Override
   public void process(ResponseBuilder rb) throws IOException {
-    NamedList numMentions = new NamedList();
+
+    NamedList<Explanation> complexExplanations = SolrPluginUtils.getExplanations(rb.getQuery(), rb.getResults().docList,
+      rb.req.getSearcher(), rb.req.getSchema());
+    NamedList<Explanation> numMentions = new NamedList<Explanation>();
+
+    for (int i = 0; i < complexExplanations.size(); i++) {
+      Explanation[] explanations = complexExplanations.getVal(i).getDetails();
+      numMentions.add(complexExplanations.getName(i), explanations[0]);
+    }
+
     rb.rsp.add("numMentions", numMentions);
   }
 

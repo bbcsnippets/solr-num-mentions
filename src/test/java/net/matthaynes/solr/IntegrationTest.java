@@ -18,6 +18,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.SolrParams;
+import org.apache.solr.common.util.NamedList;
 
 import org.yaml.snakeyaml.*;
 
@@ -57,7 +58,8 @@ public class IntegrationTest extends AbstractSolrTestCase {
 
   @Test
   public void testNumMentionsHasCorrectNumberOfDocsIn() {
-    assertTrue(querySolr().getResponse().indexOf("numMentions", 0) > -1);
+    NamedList numMentions = (NamedList) querySolr().getResponse().get("numMentions");
+    assertEquals(querySolr("index against").getResults().size(), numMentions.size());
   }
 
   // Helpers
@@ -68,27 +70,33 @@ public class IntegrationTest extends AbstractSolrTestCase {
   private QueryResponse querySolr(String query) {
     try {
       SolrQuery params = new SolrQuery(query);
-      return server.query(params);
+      QueryResponse response = server.query(params);
+      return response;
     } catch (SolrServerException e) {
       logger.error(e.getMessage());
       throw new RuntimeException("Error querying solr");
     }
   }
 
-  private List<Map> loadTestDocs() {
-    try {
-      InputStream input = new FileInputStream(new File("src/test/java/net/matthaynes/solr/docs.yml"));
-      Yaml yaml = new Yaml();
-      return (List<Map>) yaml.load(input);
-    } catch(Exception e) {
-      throw new RuntimeException("Cannot load YAML file for test docs");
+  private List<Map> testDocs;
+
+  private List<Map> getTestDocs() {
+    if (testDocs == null) {
+      try {
+        InputStream input = new FileInputStream(new File("src/test/java/net/matthaynes/solr/docs.yml"));
+        Yaml yaml = new Yaml();
+        testDocs = (List<Map>) yaml.load(input);
+      } catch(Exception e) {
+        throw new RuntimeException("Cannot load YAML file for test docs");
+      }
     }
+    return testDocs;
   }
 
   private void addTestDocs() {
     try {
 
-      List<Map> data = loadTestDocs();
+      List<Map> data = getTestDocs();
 
       for (int i = 0; i < data.size(); i++) {
         Map obj = data.get(i);
