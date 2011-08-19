@@ -46,30 +46,35 @@ public class IntegrationTest extends AbstractSolrTestCase {
   }
 
   @Test
-  public void testThatNoResultsAreReturned() throws SolrServerException {
-    SolrParams params = new SolrQuery("that is not found");
-    QueryResponse response = server.query(params);
-    assertEquals(0L, response.getResults().getNumFound());
+  public void testThatNoResultsAreReturned() {
+    assertEquals(0L, querySolr("non-existent-string").getResults().getNumFound());
   }
 
   @Test
-  public void testAddsNumeMentionsToResponse() throws SolrServerException {
-    SolrQuery params = new SolrQuery("text");
-    // params.setShowDebugInfo(true);
-    QueryResponse response = server.query(params);
-    logger.info("****************************************************************");
-    logger.info("****************************************************************");
-    logger.info("****************************************************************");
-    logger.info("****************************************************************");
-    logger.info(response.getResponse().toString());
-    logger.info("****************************************************************");
-    logger.info("****************************************************************");
-    logger.info("****************************************************************");
-    logger.info("****************************************************************");
-    assertTrue(response.getResponse().indexOf("numMentions", 0) > -1);
+  public void testAddsNumMentionsNodeToResponse() {
+    assertTrue(querySolr().getResponse().indexOf("numMentions", 0) > -1);
+  }
+
+  @Test
+  public void testNumMentionsHasCorrectNumberOfDocsIn() {
+    assertTrue(querySolr().getResponse().indexOf("numMentions", 0) > -1);
   }
 
   // Helpers
+  private QueryResponse querySolr() {
+    return querySolr("text");
+  }
+
+  private QueryResponse querySolr(String query) {
+    try {
+      SolrQuery params = new SolrQuery(query);
+      return server.query(params);
+    } catch (SolrServerException e) {
+      logger.error(e.getMessage());
+      throw new RuntimeException("Error querying solr");
+    }
+  }
+
   private List<Map> loadTestDocs() {
     try {
       InputStream input = new FileInputStream(new File("src/test/java/net/matthaynes/solr/docs.yml"));
