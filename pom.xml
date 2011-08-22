@@ -50,6 +50,7 @@
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
       <version>1.9</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

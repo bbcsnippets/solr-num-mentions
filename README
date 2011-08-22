@@ -1,12 +1,16 @@
-<lst name="num_mentions">
-  <lst name="Programme 1">
-    <int name="foo">10</int>
-    <int name="bar">12</int>
-    <int name="foo bar">5</int>
-  </lst>
-  <lst name="Programme 2">
-    <int name="foo">10</int>
-    <int name="bar">12</int>
-    <int name="foo bar">5</int>
-  </lst>
-</lst>
+# solr-num-mentions
+
+This plugin adds the number of mentions for each search term to the solr response.
+
+## Build + Install
+
+  mvn compile
+
+The copy the jar in dist/ to you solr lib directory
+
+
+
+
+
+
+
