@@ -23,11 +23,10 @@ public class NumMentionsSearchComponent extends SearchComponent {
 
     NamedList<Explanation> complexExplanations = SolrPluginUtils.getExplanations(rb.getQuery(), rb.getResults().docList,
       rb.req.getSearcher(), rb.req.getSchema());
-    NamedList<Explanation> numMentions = new NamedList<Explanation>();
+    NamedList<NamedList> numMentions = new NamedList<NamedList>();
 
     for (int i = 0; i < complexExplanations.size(); i++) {
-      Explanation[] explanations = complexExplanations.getVal(i).getDetails();
-      numMentions.add(complexExplanations.getName(i), explanations[0]);
+      numMentions.add(complexExplanations.getName(i), LuceneExplainParserUtil.parse(complexExplanations.getVal(i).toString()));
     }
 
     rb.rsp.add("numMentions", numMentions);

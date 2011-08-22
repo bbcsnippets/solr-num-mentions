@@ -59,7 +59,26 @@ public class IntegrationTest extends AbstractSolrTestCase {
   @Test
   public void testNumMentionsHasCorrectNumberOfDocsIn() {
     NamedList numMentions = (NamedList) querySolr().getResponse().get("numMentions");
-    assertEquals(querySolr("index against").getResults().size(), numMentions.size());
+    assertEquals(querySolr().getResults().size(), numMentions.size());
+  }
+
+  @Test
+  public void testNumMentionsHasCorrectResults() {
+    String query = "features:(index+against)+" +
+                   "features:(\"index against\")+" +
+                   "includes:(index+against)+" +
+                   "includes:(\"index against\")";
+
+    NamedList<NamedList<NamedList<Integer>>> numMentions = (NamedList<NamedList<NamedList<Integer>>>) querySolr(query).getResponse().get("numMentions");
+
+    // Test it kind of looks ok
+    assertEquals(1, numMentions.get("document_0").get("features").get("index").intValue());
+    assertEquals(1, numMentions.get("document_1").get("features").get("against").intValue());
+    assertEquals(1, numMentions.get("document_2").get("features").get("\"index against\"").intValue());
+    assertEquals(1, numMentions.get("document_2").get("includes").get("index").intValue());
+    assertEquals(1, numMentions.get("document_1").get("includes").get("against").intValue());
+    assertEquals(1, numMentions.get("document_0").get("includes").get("\"index against\"").intValue());
+
   }
 
   // Helpers
@@ -101,7 +120,7 @@ public class IntegrationTest extends AbstractSolrTestCase {
       for (int i = 0; i < data.size(); i++) {
         Map obj = data.get(i);
         SolrInputDocument doc = new SolrInputDocument();
-        doc.addField("id", i);
+        doc.addField("id", "document_" + Integer.toString(i));
         doc.addField("features", obj.get("features"));
         doc.addField("includes", obj.get("includes"));
         server.add(doc);
